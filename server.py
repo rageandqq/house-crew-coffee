@@ -1,4 +1,5 @@
 import os
+import pytz
 from datetime import datetime
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
@@ -62,7 +63,7 @@ def handler_reset_states():
     for k in user_states:
         user_states[k] = False
     global last_brewed_at
-    last_brewed_at = datetime.now()
+    last_brewed_at = datetime.now(pytz.timezone('US/Eastern'))
     emit_state(broadcast=True)
 
 
@@ -71,13 +72,16 @@ def emit_state(broadcast=True):
 
 
 # CONTRACT:
-# returns an array of all user states, e.g.
-# [ { user: 'john', checked: True }, ... ]
+# returns a dict with array of all user states and last brewed time, e.g.
+# {
+#    'userStates': [ { user: 'john', checked: True }, ... ],
+#    'lastBrewed': '2017-07-07 17:22:41...'
+# }
 def get_user_states_payload():
     states = []
     for k, v in user_states.iteritems():
         states.append({'user': k, 'checked': v})
     return {
         'userStates': states,
-        'lastBrewed': str(last_brewed_at)
+        'lastBrewed': str(last_brewed_at) if last_brewed_at else None
     }

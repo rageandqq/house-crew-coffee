@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Hous3 Cr3w Coffee</title>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <script type="text/javascript" charset="utf-8">
         var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
@@ -16,7 +17,8 @@
           });
 
           var numServings = userStates.filter(function(state) { return state.checked }).length;
-          var lastBrewedAt = data.lastBrewed;
+          var lastBrewedAt = data.lastBrewed ? 
+             moment(data.lastBrewed).format('LT') : 'Never';
 
           document.getElementById('serving-count').innerHTML = numServings;
           document.getElementById('last-brewed-at').innerHTML = lastBrewedAt;
