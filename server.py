@@ -1,10 +1,33 @@
-# import os
+import os
 from datetime import datetime
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 
+
+# ================================================
+# Flask and SocketIO setup
+# ================================================
+
 app = Flask(__name__)
 socketio = SocketIO(app)
+
+
+# ================================================
+# Server setup and routing
+# ================================================
+
+@app.route('/')
+def index():
+    return render_template('control.html')
+
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 8000))
+    socketio.run(app, port=port, host='0.0.0.0')
+
+# ================================================
+# State
+# ================================================
 
 user_states = {
     'john': False,
@@ -16,18 +39,9 @@ user_states = {
 last_brewed_at = None
 
 
-@app.route('/')
-def index():
-    return render_template('control.html')
-
-
-if __name__ == '__main__':
-    socketio.run(app)
-
 # ================================================
 # Socket IO communication logic
 # ================================================
-
 
 @socketio.on('new-connection')
 def handle_new_connection():

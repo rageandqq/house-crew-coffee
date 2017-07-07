@@ -22,11 +22,9 @@
           document.getElementById('last-brewed-at').innerHTML = lastBrewedAt;
         });
         var updateState = function(el) {
-          console.log('Changed: ', el.id, ' to: ', el.checked);
           socket.emit('change-state', { user: el.id, checked: el.checked })
         }
       var freshPot = function() {
-        console.log('Made a fresh pot!');
         socket.emit('reset-state');
       }
     </script>

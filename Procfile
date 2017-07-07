@@ -1,1 +1,1 @@
-web: FLASK_APP=server.py flask run
+web: gunicorn -k gevent -w 1 server:app
