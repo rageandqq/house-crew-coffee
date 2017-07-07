@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hous3 Cr3w Coffee</title>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+        socket.on('connect', function() {
+          socket.emit('new-connection');
+        });
+        socket.on('state', function(data) {
+          userStates = data['userStates']
+          userStates.forEach(function(state) {
+            var checkbox = document.getElementById(state.user);
+            checkbox.checked = state.checked;
+          });
+
+          var numServings = userStates.filter(function(state) { return state.checked }).length;
+          var lastBrewedAt = data.lastBrewed;
+
+          document.getElementById('serving-count').innerHTML = numServings;
+          document.getElementById('last-brewed-at').innerHTML = lastBrewedAt;
+        });
+        var updateState = function(el) {
+          console.log('Changed: ', el.id, ' to: ', el.checked);
+          socket.emit('change-state', { user: el.id, checked: el.checked })
+        }
+      var freshPot = function() {
+        console.log('Made a fresh pot!');
+        socket.emit('reset-state');
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Hous3 Cr3w Coffee Control</h1>
+    <h2>Cr3w Status</h2>
+    <div>
+      <span>John:</span>
+      <input type="checkbox" id="john" onchange="updateState(this)"/>
+    </div>
+    <div>
+      <span>Navin:</span>
+      <input type="checkbox" id="navin" onchange="updateState(this)"/>
+    </div>
+    <div>
+      <span>Winnie:</span>
+      <input type="checkbox" id="winnie" onchange="updateState(this)"/>
+    </div>
+    <div>
+      <span>Sameer:</span>
+      <input type="checkbox" id="sameer" onchange="updateState(this)"/>
+    </div>
+
+    <hr>
+    <h2>Servings info</h2>
+    <div>
+      <span>(Additional) Servings to make: </span><span id="serving-count">0</span>
+    </div>
+
+    <hr>
+    <h2>Coffee Options</h2>
+    <div>
+      <input
+        type="button" onclick="freshPot()"
+        value="I just made a fresh pot! RESET ME!"/>
+    </div>
+    <div>
+      <span>Last pot brewed at: </span><span id="last-brewed-at">never</span>
+    </div>
+  </body>
+</html>
