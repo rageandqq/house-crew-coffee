@@ -65,6 +65,7 @@ def handler_reset_states():
     global last_brewed_at
     last_brewed_at = datetime.now(pytz.timezone('US/Eastern'))
     emit_state(broadcast=True)
+    emit('new-pot', broadcast=True, include_self=False)
 
 
 def emit_state(broadcast=True):

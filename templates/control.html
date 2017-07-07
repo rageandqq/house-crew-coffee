@@ -29,6 +29,9 @@
       var freshPot = function() {
         socket.emit('reset-state');
       }
+      socket.on('new-pot', function() {
+        alert('A fresh pot of joe is ready!');
+      });
     </script>
   </head>
   <body>
